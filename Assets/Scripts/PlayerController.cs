@@ -11,15 +11,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] LayerMask groundLayer;
     [SerializeField] Transform groundCheck;
     [SerializeField] float groundCheckRadius = 0.2f;
-    [SerializeField] int bulletSpeed;
 
     public PlayerInputActions playerControls;
     Vector2 moveDirection = Vector2.zero;
 
     InputAction movement;
     InputAction jumpAction;
-    InputAction fireAction;
-    InputAction altFireAction;
 
     float jumpPower = 15f;
     bool isGrounded;
@@ -43,14 +40,12 @@ public class PlayerController : MonoBehaviour
         InputActions();
         movement.Enable();
         jumpAction.Enable();
-        fireAction.Enable();
     }
 
     void OnDisable()
     {
         movement.Disable();
         jumpAction.Disable();
-        fireAction.Disable();
     }
 
     void Update()
@@ -64,15 +59,6 @@ public class PlayerController : MonoBehaviour
     {
         CheckIfGrounded();
     }
-
-    /*
-    void Fire(InputAction.CallbackContext context)
-    {
-        Command fireCommand = new FireCommand(rb, bulletSpeed, moveDirection, BulletType.Normal);
-        fireCommand.Execute();
-    }
-    /*
-    */
 
     void Move(InputAction.CallbackContext context)
     {
@@ -93,33 +79,10 @@ public class PlayerController : MonoBehaviour
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
     }
 
-    void TakeDamage(int damage)
-    {
-
-        health -= damage;
-        if (health < 0) health = 0;
-
-        if (health <= 0)
-        {
-            Die();
-        }
-    }
-
-    public int GetHealth()
-    {
-        return health;
-    }
-
-    void Die()
-    {
-        Debug.Log("Player is dead");
-    }
-
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Boss"))
         {
-            TakeDamage(20);
         }
 
         if (collision.gameObject.CompareTag("Wall"))
