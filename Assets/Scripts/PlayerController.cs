@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : Singleton<MonoBehaviour>
 {
     Rigidbody2D rb;
     [SerializeField] int moveSpeed;
@@ -16,7 +16,9 @@ public class PlayerController : MonoBehaviour
     Vector2 moveDirection = Vector2.zero;
 
     InputAction movement;
-    InputAction jumpAction;
+    InputAction jump;
+
+    public static PlayerController Instance {get; private set;}
 
     float jumpPower = 15f;
     bool isGrounded;
@@ -30,22 +32,22 @@ public class PlayerController : MonoBehaviour
     void InputActions()
     {
         movement = playerControls.Player.Move;
-        jumpAction = playerControls.Player.Jump;
+        jump = playerControls.Player.Jump;
         movement.performed += Move;
-        jumpAction.performed += Jump;
+        jump.performed += Jump;
     }
 
     void OnEnable()
     {
         InputActions();
         movement.Enable();
-        jumpAction.Enable();
+        jump.Enable();
     }
 
     void OnDisable()
     {
         movement.Disable();
-        jumpAction.Disable();
+        jump.Disable();
     }
 
     void Update()
@@ -81,11 +83,7 @@ public class PlayerController : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Boss"))
-        {
-        }
-
-        if (collision.gameObject.CompareTag("Wall"))
+        if (collision.gameObject.CompareTag("Snowflake"))
         {
             movement.Disable();
         }
